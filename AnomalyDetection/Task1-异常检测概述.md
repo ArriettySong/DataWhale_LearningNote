@@ -190,4 +190,7 @@ Something to mark：
 
 ## 5. 课后练习
 
-（晚饭回来补上）
+pyod作者给出了很棒的例子，看代码，配置环境，运行即可，这里就不赘述了。
+
+https://github.com/yzhao062/pyod/tree/master/examples
+
