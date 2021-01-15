@@ -128,7 +128,7 @@ HBOS算法流程：
 >
 > 时间复杂度：$O(n\times log(n))$
 
-![image-20210115150735233](https://i.loli.net/2021/01/15/3PItGDwAdNkgCfv.png)
+![image-20210115150735233](https://tva1.sinaimg.cn/large/008eGmZEly1gmohbicsdrj31640ny757.jpg)
 
 2.对每个维度都计算了一个独立的直方图，其中每个箱子的高度表示密度的估计。然后为了使得最大高度为1（确保了每个特征与异常值得分的权重相等），对直方图进行归一化处理。最后，每一个实例的HBOS值由以下公式计算：
 $$
