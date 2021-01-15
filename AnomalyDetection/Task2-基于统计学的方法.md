@@ -120,7 +120,7 @@ HBOS算法流程：
 >
 > 时间复杂度：$O(n)$
 
-![image-20210115151003109](https://i.loli.net/2021/01/15/9BbHdKhYV2W4CkR.png){width:"100px",height="100px"}
+![image-20210115151003109](https://i.loli.net/2021/01/15/8keXBVlfOHGc15A.png)
 
 
 
@@ -162,3 +162,6 @@ $$
 
 下载了kaggle上的信用卡欺诈数据，采用该数据对HBOS算法进行尝试。
 
+运行代码见：
+
+https://github.com/ArriettySong/DataWhale_LearningNote/blob/main/AnomalyDetection/Task2-%E5%9F%BA%E4%BA%8E%E7%BB%9F%E8%AE%A1%E5%AD%A6%E7%9A%84%E6%96%B9%E6%B3%95-HBOS.ipynb
