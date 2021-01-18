@@ -8,19 +8,39 @@
 
 ### 写在前面
 
-此次作业的理论知识及公式推导部分较多，尚未完全消化，写把作业做了，理论部分再细细吸收。
+此次作业的理论知识及公式推导部分较多，尚未完全消化，写把作业做了，理论部分找了一些讲解视频，理解后再来补充。
 
 最小二乘法：
 
+[最小二乘法](https://www.bilibili.com/video/BV1jb411A7pf)
+
+[【机器学习】简单线性回归&最小二乘法十分钟学会！内含python求解过程](https://www.bilibili.com/video/BV1sJ411z7zJ)
+
 梯度下降：
+
+[3Blue1Brown](https://space.bilibili.com/88461692) [【官方双语】深度学习之梯度下降法 Part 2 ver 0.9 beta](https://www.bilibili.com/video/BV1Ux411j7ri)
+
+[莫烦Python](https://space.bilibili.com/243821484)[神经网络 : 梯度下降 (Gradient Descent in Neural Nets)](https://www.bilibili.com/video/BV1Lx411j7iv)
 
 PCA：
 
+[【中字】主成分分析法（PCA）| 分步步骤解析](https://www.bilibili.com/video/BV1C7411A7bj)
+
+[5分钟看懂PCA分析](https://www.bilibili.com/video/BV1Q4411F7zK)
 
 
-PCA算法实践：
 
+PCA算法实践：[Task3-线性模型-PCA.ipynb](https://github.com/ArriettySong/DataWhale_LearningNote/blob/main/AnomalyDetection/Task3-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B-PCA.ipynb) 
 
+在信用卡欺诈数据上的效果：
+
+> ```
+> On Training Data:
+> pca ROC:0.948, precision @ rank n:0.2275
+> 
+> On Test Data:
+> pca ROC:0.961, precision @ rank n:0.2468
+> ```
 
 
 
@@ -39,7 +59,7 @@ PCA算法实践：
 
 ​		基于这两点假设，在异常检测的第一阶段，为了确定特定的模型是否适合特定的数据集，对数据进行探索性和可视化分析是非常关键的。
 ## 2、数据可视化
-以乳腺癌数据集为例做一些简单的数据可视化。
+以[乳腺癌数据集](https://download.csdn.net/download/weixin_39940512/14008876)为例做一些简单的数据可视化。
 
 具体见：[Task3-数据可视化](https://github.com/ArriettySong/DataWhale_LearningNote/blob/main/AnomalyDetection/Task3-%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96.ipynb)
 
@@ -51,7 +71,7 @@ PCA算法实践：
 
 ​		线性回归是统计学中一个重要的应用，这个重要的应用往往是指通过一系列自变量去预测一个特殊因变量的值。在这种情况下，异常值是根据其他自变量对因变量的影响来定义的，而自变量之间相互关系中的异常则不那么重要。这里的异常点检测主要用于数据降噪，避免异常点的出现对模型性能的影响，因而这里关注的兴趣点主要是正常值(n)。
 
-​		而我们通常所说的异常检测中并不会对任何变量给与特殊对待，异常值的定义是基于基础数据点的整体分布，这里我们关注的兴趣点主要是异常值(o)。
+​		而我们通常所说的异常检测中并不会对任何变量给予特殊对待，异常值的定义是基于基础数据点的整体分布，这里我们关注的兴趣点主要是异常值(o)。
 
 > **广义的回归建模只是一种工具，这种工具既可以用来进行数据降噪也可以进行异常点检测。**
 
@@ -183,10 +203,6 @@ $$S \operatorname{core}(\bar{X})=\sum_{j=1}^{d} \frac{\left|(\bar{X}-\bar{\mu}) 
 ## 6、总结
 
 &emsp;&emsp;真实数据中，数据不同属性之间往往具有显著的相关性。在这种情况下，线性建模可以提供一种有效的工具来从底层数据中移除异常值或者进行异常检测。对于其他基于因变量回归的应用，线性建模是一种工具，去除异常值对于提高此类应用的性能是非常重要的。在大多数情况下，主成分分析提供了去除异常值和进行异常检测最有效的方法，因为它对存在少数异常值的数据更有鲁棒性。
-
-## 7、资料
-
-[数据集](https://download.csdn.net/download/weixin_39940512/14008876)
 
 
 
