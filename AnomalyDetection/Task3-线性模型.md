@@ -10,25 +10,29 @@
 
 此次作业的理论知识及公式推导部分较多，尚未完全消化，写把作业做了，理论部分找了一些讲解视频，理解后再来补充。
 
-最小二乘法：
+**最小二乘法：**
 
 [最小二乘法](https://www.bilibili.com/video/BV1jb411A7pf)
 
 [【机器学习】简单线性回归&最小二乘法十分钟学会！内含python求解过程](https://www.bilibili.com/video/BV1sJ411z7zJ)
 
-梯度下降：
+**梯度下降：**
 
 [3Blue1Brown](https://space.bilibili.com/88461692) [【官方双语】深度学习之梯度下降法 Part 2 ver 0.9 beta](https://www.bilibili.com/video/BV1Ux411j7ri)
 
 [莫烦Python](https://space.bilibili.com/243821484)[神经网络 : 梯度下降 (Gradient Descent in Neural Nets)](https://www.bilibili.com/video/BV1Lx411j7iv)
 
-PCA：
+**PCA：**
 
 [【中字】主成分分析法（PCA）| 分步步骤解析](https://www.bilibili.com/video/BV1C7411A7bj)
 
 [5分钟看懂PCA分析](https://www.bilibili.com/video/BV1Q4411F7zK)
 
 
+
+### 作业
+
+乳腺癌数据集上的数据可视化：[Task3-数据可视化](https://github.com/ArriettySong/DataWhale_LearningNote/blob/main/AnomalyDetection/Task3-%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96.ipynb)
 
 PCA算法实践：[Task3-线性模型-PCA.ipynb](https://github.com/ArriettySong/DataWhale_LearningNote/blob/main/AnomalyDetection/Task3-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B-PCA.ipynb) 
 
