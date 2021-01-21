@@ -4,3 +4,8 @@ AnomalyDetection/.ipynb_checkpoints/Task2-基于统计学的方法-COPOD-checkpo
 AnomalyDetection/.ipynb_checkpoints
 AnomalyDetection/dataverse_files.zip
 AnomalyDetection/dataverse_files
+AnomalyDetection/img
+*.xml
+*.iml
+AnomalyDetection/plot_anomaly_comparison.ipynb
+AnomalyDetection/plot_anomaly_comparison.py
