@@ -1,5 +1,7 @@
 # 异常检测——基于相似度的方法
 
+[本文github地址](https://github.com/ArriettySong/DataWhale_LearningNote/blob/main/AnomalyDetection/Task4-基于相似度的方法.md)
+
 **主要内容包括：**
 
 - 基于距离的度量
@@ -91,7 +93,7 @@
 
 
 
-### 2.2 基于索引的方法(暂不深入研究)
+### 2.2 基于索引的方法（暂不深入研究）
 
 ​		对于一个给定数据集，基于索引的方法利用多维索引结构(如 $\mathrm{R}$ 树、$k-d$ 树)来搜索每个数据对象 $A$ 在半径 $D$ 范围 内的相邻点。设 $M$ 是一个异常值在其 $D$ -邻域内允许含有对象的最多个数，若发现某个数据对象 $A$ 的 $D$ -邻域内出现 $M+1$ 甚至更多个相邻点， 则判定对象 $A$ 不是异常值。该算法时间复杂度在最坏情况下为 $O\left(k N^{2}\right),$ 其中 $k$ 是数据集维数， $N$ 是数据集包含对象的个数。该算法在数据集的维数增加时具有较好的扩展性，但是时间复杂度的估算仅考虑了搜索时间，而构造索引的任务本身就需要密集复杂的计算量。
 
@@ -208,137 +210,40 @@ PS：$ρ_2(O2)$的计算里有一点点笔误，看出来了吗？（偷笑
 
 ## 4、练习
 
-### 4.1 生成数据，调用sklearn的LOF算法，并可视化
+sklearn中LocalOutlierFactor库可以用于**对单个数据集进行无监督的离群检测**，也可以**基于已有的正常数据集对新数据集进行新颖性检测**。
 
+### 4.1 生成数据，调用sklearn的LOF算法进行单个数据集的无监督离群检测，并可视化
 
+[Task4-相似度-LOF（无监督离群检测）.ipynb](https://github.com/ArriettySong/DataWhale_LearningNote/blob/main/AnomalyDetection/Task4-%E7%9B%B8%E4%BC%BC%E5%BA%A6-LOF%EF%BC%88%E6%97%A0%E7%9B%91%E7%9D%A3%E7%A6%BB%E7%BE%A4%E6%A3%80%E6%B5%8B%EF%BC%89.ipynb)
 
-sklearn中LocalOutlierFactor库可以用于对单个数据集进行无监督的离群检测，也可以基于已有的正常数据集对新数据集进行新颖性检测。在这里我们进行单个数据集的无监督离群检测。
-
-
-```python
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.neighbors import LocalOutlierFactor
-
-plt.rcParams['font.sans-serif'] = ['SimHei']
-plt.rcParams['axes.unicode_minus']=False
-pd.set_option('display.max_columns', None)
-pd.set_option('display.max_rows', None)
-```
-
-&emsp;&emsp;首先构造一个含有集群和离群点的数据集。该数据集包含两个密度不同的正态分布集群和一些离群点。但是，这里我们手工对数据点的标注其实是不准确的，可能有一些随机点会散落在集群内部，而一些集群点由于正态分布的特性，会与其余点的距离相对远一些。在这里我们无法进行区分，所以按照生成方式统一将它们标记为“集群内部的点”或者“离群点”。    
-
-
-```python
-np.random.seed(61)
-
-# 构造两个数据点集群
-X_inliers1 = 0.2 * np.random.randn(100, 2)
-X_inliers2 = 0.5 * np.random.randn(100, 2)
-X_inliers = np.r_[X_inliers1 + 2, X_inliers2 - 2]
-
-# 构造一些离群的点
-X_outliers = np.random.uniform(low=-4, high=4, size=(20, 2))
-
-# 拼成训练集
-X = np.r_[X_inliers, X_outliers]
-
-n_outliers = len(X_outliers)
-ground_truth = np.ones(len(X), dtype=int)
-# 打标签，群内点构造离群值为1，离群点构造离群值为-1
-ground_truth[-n_outliers:] = -1
-```
-
-
-```python
-plt.title('构造数据集 (LOF)')
-plt.scatter(X[:-n_outliers, 0], X[:-n_outliers, 1], color='b', s=5, label='集群点')
-plt.scatter(X[-n_outliers:, 0], X[-n_outliers:, 1], color='orange', s=5, label='离群点')
-
-plt.axis('tight')
-plt.xlim((-5, 5))
-plt.ylim((-5, 5))
-legend = plt.legend(loc='upper left')
-legend.legendHandles[0]._sizes = [10]
-legend.legendHandles[1]._sizes = [20]
-plt.show()
-```
-
-
-
-<img src="D:\WorkSpace\GitHub\DataWhale_LearningNote\AnomalyDetection\img\image-20210120170514299.png" alt="image-20210120170514299" style="zoom:50%;" />
-
-
-
-
-&emsp;&emsp;然后使用LocalOutlierFactor库对构造数据集进行训练，得到训练的标签和训练分数（局部离群值）。为了便于图形化展示，这里对训练分数进行了一些转换。
-
-
-```python
-# 训练模型（找出每个数据的实际离群值）
-clf = LocalOutlierFactor(n_neighbors=20, contamination=0.1)
-
-# 对单个数据集进行无监督检测时，以1和-1分别表示非离群点与离群点
-y_pred = clf.fit_predict(X)
-
-# 找出构造离群值与实际离群值不同的点
-n_errors = y_pred != ground_truth
-X_pred = np.c_[X,n_errors]
-
-X_scores = clf.negative_outlier_factor_
-# 实际离群值有正有负，转化为正数并保留其差异性（不是直接取绝对值）
-X_scores_nor = (X_scores.max() - X_scores) / (X_scores.max() - X_scores.min())
-X_pred = np.c_[X_pred,X_scores_nor]
-X_pred = pd.DataFrame(X_pred,columns=['x','y','pred','scores'])
-
-X_pred_same = X_pred[X_pred['pred'] == False]
-X_pred_different = X_pred[X_pred['pred'] == True]
-
-# 直观地看一看数据
-X_pred
-```
-
-
-
-&emsp;&emsp;将训练分数（离群程度）用圆直观地表示出来，并对构造标签与训练标签不一致的数据用不同颜色的圆进行标注。
-
-
-```python
-plt.title('局部离群因子检测 (LOF)')
-plt.scatter(X[:-n_outliers, 0], X[:-n_outliers, 1], color='b', s=5, label='集群点')
-plt.scatter(X[-n_outliers:, 0], X[-n_outliers:, 1], color='orange', s=5, label='离群点')
-
-# 以标准化之后的局部离群值为半径画圆，以圆的大小直观表示出每个数据点的离群程度
-plt.scatter(X_pred_same.values[:,0], X_pred_same.values[:, 1], 
-            s=1000 * X_pred_same.values[:, 3], edgecolors='c', 
-            facecolors='none', label='标签一致')
-plt.scatter(X_pred_different.values[:, 0], X_pred_different.values[:, 1], 
-            s=1000 * X_pred_different.values[:, 3], edgecolors='violet', 
-            facecolors='none', label='标签不同')
-
-plt.axis('tight')
-plt.xlim((-5, 5))
-plt.ylim((-5, 5))
-
-legend = plt.legend(loc='upper left')
-legend.legendHandles[0]._sizes = [10]
-legend.legendHandles[1]._sizes = [20]
-plt.show()
-```
-
-<img src="D:\WorkSpace\GitHub\DataWhale_LearningNote\AnomalyDetection\img\image-20210120170623916.png" alt="image-20210120170623916" style="zoom:50%;" />
+1. 构造一个含有集群和离群点的数据集。该数据集包含两个密度不同的正态分布集群和一些离群点。（PS：我们手工对数据点的标注其实是不准确的，可能有一些随机点会散落在集群内部）
+2. 使用LocalOutlierFactor库对构造数据集进行训练，得到训练的标签和训练分数（局部离群值）。
+3. 将训练分数（离群程度）用圆直观地表示出来，并对构造标签与训练标签不一致的数据用不同颜色的圆进行标注。
 
 ​		可以看出，模型成功区分出了大部分的离群点，一些因为随机原因散落在集群内部的“离群点”也被识别为集群内部的点，但是一些与集群略为分散的“集群点”则被识别为离群点。
 ​		同时可以看出，模型对于不同密度的集群有着较好的区分度，对于低密度集群与高密度集群使用了不同的密度阈值来区分是否离群点。
 
 ​		因此，我们从直观上可以得到一个印象，即基于LOF模型的离群点识别在某些情况下，可能比基于某种统计学分布规则的识别更加符合实际情况。
 
-### 4.2 信用卡欺诈数据，使用PyOD库调用LOF算法
+### 4.2 生成数据，调用sklearn的LOF算法进行新颖性检测，并可视化
 
-github ipynb地址
+参考官方文档：https://scikit-learn.org/stable/auto_examples/neighbors/plot_lof_novelty_detection.html?highlight=lof
 
-precision@rank n远低于前几天的PCA、HBOS等算法，说明该数据不太适合LOF算法。
+[Task4-相似度-LOF（新颖性检测）.ipynb](https://github.com/ArriettySong/DataWhale_LearningNote/blob/main/AnomalyDetection/Task4-%E7%9B%B8%E4%BC%BC%E5%BA%A6-LOF%EF%BC%88%E6%96%B0%E9%A2%96%E6%80%A7%E6%A3%80%E6%B5%8B%EF%BC%89.ipynb)
+
+注意：当LOF用于新颖性检测时，不可以在训练集上使用predict、decision和score样本（这将导致错误的结果），只能对新的不可见数据（不在训练集中）使用这些方法。
+
+```python
+clf = LocalOutlierFactor(n_neighbors=20, novelty=True, contamination=0.1)
+```
+
+
+
+### 4.3 信用卡欺诈数据，分别用PyOD库和sklearn调用LOF算法
+
+[Task4-相似度-LOF（信用卡欺诈数据）.ipynb](https://github.com/ArriettySong/DataWhale_LearningNote/blob/main/AnomalyDetection/Task4-%E7%9B%B8%E4%BC%BC%E5%BA%A6-LOF%EF%BC%88%E4%BF%A1%E7%94%A8%E5%8D%A1%E6%AC%BA%E8%AF%88%E6%95%B0%E6%8D%AE%EF%BC%89.ipynb)
+
+precision@rank n远低于前几天的PCA、HBOS等算法，该数据可能不太适合LOF算法。
 
 ![image-20210120180517381](D:\WorkSpace\GitHub\DataWhale_LearningNote\AnomalyDetection\img\image-20210120180517381.png)
 
