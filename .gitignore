@@ -9,3 +9,5 @@ AnomalyDetection/img
 *.iml
 AnomalyDetection/plot_anomaly_comparison.ipynb
 AnomalyDetection/plot_anomaly_comparison.py
+AnomalyDetection/plot_lof_novelty_detection.ipynb
+AnomalyDetection/plot_lof_novelty_detection.py
