@@ -170,3 +170,12 @@ $$
 运行代码见：
 
 https://github.com/ArriettySong/DataWhale_LearningNote/blob/main/AnomalyDetection/Task2-%E5%9F%BA%E4%BA%8E%E7%BB%9F%E8%AE%A1%E5%AD%A6%E7%9A%84%E6%96%B9%E6%B3%95-HBOS.ipynb
+
+```
+On Training Data:
+HBOS ROC:0.947, precision @ rank n:0.3771
+
+On Test Data:
+HBOS ROC:0.9659, precision @ rank n:0.3239
+```
+
