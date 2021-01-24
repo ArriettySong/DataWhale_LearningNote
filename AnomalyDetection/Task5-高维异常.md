@@ -2,6 +2,8 @@
 
 # 异常检测——高维数据异常检测
 
+[本文github地址](https://github.com/ArriettySong/DataWhale_LearningNote/blob/main/AnomalyDetection/Task5-%E9%AB%98%E7%BB%B4%E5%BC%82%E5%B8%B8.md)
+
 **主要内容包括：**
 
 * **Feature Bagging**
@@ -110,8 +112,6 @@ Feature Bagging，基本思想与bagging相似，只是对象是feature。featur
 **方差**：是指算法输出结果与算法输出期望之间的误差，描述模型的离散程度，数据波动性。
 
 **偏差**：是指预测值与真实值之间的差距。即使在离群点检测问题中没有可用的基本真值
-
-Feature Bagging可以降低方差
 
 
 
@@ -273,7 +273,7 @@ $\xi$:是欧拉常数，其值为0.577215664
 
 ## 4、练习
 
-### 1. 调用feature bagging
+### 1. 调用feature bagging和Isolation Forest
 
 PyOD库中的FeatureBagging算法的默认基检测器为LOF，但也可以通过estimator_params自行指定。（但是还不清楚怎么写）
 
@@ -325,7 +325,7 @@ clf.fit(X_train)
 
 #### 1.2 采用信用卡欺诈数据调用feature bagging和isolation forest
 
-
+[Task5-FeatureBagging&IForest（信用卡欺诈数据）.ipynb](https://github.com/ArriettySong/DataWhale_LearningNote/blob/main/AnomalyDetection/Task5-FeatureBagging%26IForest%EF%BC%88%E4%BF%A1%E7%94%A8%E5%8D%A1%E6%AC%BA%E8%AF%88%E6%95%B0%E6%8D%AE%EF%BC%89.ipynb)
 
 基于LOF基检测器的Feature Bagging：
 
@@ -367,17 +367,22 @@ On Test Data:
 IForest ROC:0.9433, precision @ rank n:0.2746
 ```
 
-总结：截止目前，在信用卡欺诈数据上单个检测器准确率最高的是HBOS，但是准确率依然不足50%，故基于HBOS的FeatureBagging准确率还不如单个HBOS。
+**总结**：截止目前，在信用卡欺诈数据上单个检测器准确率最高的是**HBOS**，但是准确率依然不足50%，故基于HBOS的FeatureBagging准确率还不如单个HBOS。
 
+### 2. (思考题：feature bagging为什么可以降低方差？)
 
+假设有n个**独立同分布**的模型，每个模型的方差均为 $σ^2$，基于方差的性质可得：
 
-**3.(思考题：feature bagging为什么可以降低方差？)**
+$Var(\frac1n∑_{i=1}^nX_i)=\frac1{n^2}Var(∑_{i=1}^nX_i)=\frac{σ^2}n$
 
+这样模型均值的方差仅为单模型方差的$\frac1n$。然而在只有一个数据集的情况下只能训练出一个模型，也就没法求平均。所以为了缓解这个问题，可以采用有放回抽样来模拟生成多个数据集，将每个数据集训练得到的模型平均来降低方差，即是Bagging的基本思想。
 
+参考链接：https://www.cnblogs.com/massquantity/p/9029611.html
 
-**4.(思考题：feature bagging存在哪些缺陷，有什么可以优化的idea？)**
+### 3. (思考题：feature bagging存在哪些缺陷，有什么可以优化的idea？)
 
-
+1. Feature Bagging由于存在多个基检测器，训练及预测的耗时较高，可考虑并行化处理
+2. Feature Bagging抽取$\lfloor d/2 \rfloor$和$(d-1)$个特征来生成子样本数据，但特征之间有可能相关性极高，导致该步骤失效。在进行模型训练之前，要对数据要充分的认知分析与数据处理。
 
 ## 5、参考文献
 
@@ -386,6 +391,8 @@ IForest ROC:0.9433, precision @ rank n:0.2746
 [2]https://cs.nju.edu.cn/zhouzh/zhouzh.files/publication/icdm08b.pdf
 
 [3]《Outlier Analysis》——Charu C. Aggarwal
+
+[4] https://www.cnblogs.com/massquantity/p/9029611.html
 
 
 
