@@ -123,8 +123,8 @@ $k-distance(p)$：对象$p$的第$k$距离$d_k(p)$
 
 $d(p,o)$=$k-distance(p)$且满足：
 
-+ 在集合D中至少有不包括$p$在内的$k$个点 $o'$，其中$o'∈D\{p\}\{x≠p\}$，满足$d(p,o')≤d(p,o)$
-+ 在集合D中最多有不包括$p$在内的$k-1$个点$o'$，其中$o'∈D\{p\}\{x≠p\}$，满足$d(p,o')<d(p,o)$    
++ 在集合D中至少有不包括$p$在内的$k$个点 $o'$，其中$o'∈D\backslash\{p\}$，满足$d(p,o')≤d(p,o)$
++ 在集合D中最多有不包括$p$在内的$k-1$个点$o'$，其中$o'∈D\backslash\{p\}$，满足$d(p,o')<d(p,o)$    
 
 &emsp;&emsp;直观一些理解，就是以对象$p$为中心，对数据集$D$中的所有点到$p$的距离进行排序，距离对象$p$第$k$近的点$o$与$p$之间的距离就是$k$-距离。
 
@@ -132,7 +132,7 @@ $d(p,o)$=$k-distance(p)$且满足：
 
 ### 3.2 k-邻域（k-distance neighborhood）：    
 
-对象$p$的第$k$距离邻域 $N_k(p)$: 	$N_{k − d i s t a n c e ( p )}( P ) = \{ q ∈ D \{q≠ p \} ∣ d ( p , q ) ≤ k − d i s t a n c e ( p )\}$
+对象$p$的第$k$距离邻域 $N_k(p)$: 	$N_{k − d i s t a n c e ( p )}( P ) = \{ q ∈ D \backslash\{q\} ∣ d ( p , q ) ≤ k − d i s t a n c e ( p )\}$
 
 就是$p$的第$k$距离即以内的所有点，包括第$k$距离点。
 
