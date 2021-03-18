@@ -349,10 +349,10 @@ plt.show()
 | 小数据集   | 亚麻布数据集           | [`load_linnerud`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_linnerud.html#sklearn.datasets.load_linnerud)([return_X_y]) | 多项式回归 |
 | 小数据集   | 红酒数据集             | [`load_wine`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_wine.html#sklearn.datasets.load_wine)([return_X_y]) | 分类       |
 | 小数据集   | 乳腺癌数据集           | [`load_breast_cancer`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_breast_cancer.html#sklearn.datasets.load_breast_cancer)([return_X_y]) | 分类       |
-| 大数据集   | olivetti脸部图像数据集 | fetch_olivetti_faces()                                       | 降维       |
-| 大数据集   | 新闻分类数据集         | fetch_20newsgroups()                                         | 分类       |
-| 大数据集   | 带标签的人脸数据集     | fetch_lfw_people()                                           | 分类；降维 |
-| 大数据集   | 路透社新闻语料数据集   | fetch_rcv1()                                                 | 分类       |
+| 大数据集   | olivetti脸部图像数据集 | [`fetch_olivetti_faces()`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_olivetti_faces.html#sklearn.datasets.fetch_olivetti_faces) | 降维       |
+| 大数据集   | 新闻分类数据集         | [`fetch_20newsgroups()`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_20newsgroups.html#sklearn.datasets.fetch_20newsgroups) | 分类       |
+| 大数据集   | 带标签的人脸数据集     | [`fetch_lfw_people()`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_lfw_people.html#sklearn.datasets.fetch_lfw_people) | 分类；降维 |
+| 大数据集   | 路透社新闻语料数据集   | [`fetch_rcv1()`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_rcv1.html#sklearn.datasets.fetch_rcv1) | 分类       |
 
 
 
@@ -474,3 +474,6 @@ plt.show()
 ```
 
 ![png](%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80_files/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80_24_1.png)
+
+[^我是脚注]: 
+[^s bf ]: 
