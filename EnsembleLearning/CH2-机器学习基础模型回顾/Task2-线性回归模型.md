@@ -1,11 +1,10 @@
-参考资料：
 
-拓展学习资料：线性回归模型123
-https://zhuanlan.zhihu.com/p/109808497 
-https://zhuanlan.zhihu.com/p/109815760
-https://zhuanlan.zhihu.com/p/109819252
-R语言实战之回归分析https://zhuanlan.zhihu.com/p/184923047 
-线性回归https://zhuanlan.zhihu.com/p/49480391
+
+Task2教程：[DataWhale集成学习教程链接](https://github.com/datawhalechina/team-learning-data-mining/tree/master/EnsembleLearning)
+
+写在前面：Task1还没啥大压力，到了Task2，对于从未推导过公式的我来说有些太吃力了，只能尽力做。本节课程除了SVR大部分原理都懂，实践问题都不大，调参还是个问题。手推公式暂时只能搞定最小二乘法，也算是进步。周末再回到Task2尝试一下，工作党伤不起。。
+
+
 
 # 2. 使用sklearn构建完整的机器学习项目流程
 
@@ -19,21 +18,20 @@ R语言实战之回归分析https://zhuanlan.zhihu.com/p/184923047
 ## 2.1 使用sklearn构建完整的回归项目
 
    ### 2.1.1 明确解决问题的模型类型：<font color=red>回归/分类</font>
-   本次实践项目为回归项目。    
+   本次实践项目为回归项目，回归的核心在于预测的结果是连续型变量。
    ### 2.1.2 收集数据集并选择合适的<font color=red>特征</font>
    数据集上我们使用上一节尝试过的Boston房价数据集。    
 
 
 ```python
-# 引入相关科学计算包
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 %matplotlib inline 
-plt.style.use("ggplot")      # 样式美化
+plt.style.use("ggplot")      
 import seaborn as sns
 from sklearn import datasets
-boston = datasets.load_boston()     # 返回一个类似于字典的类
+boston = datasets.load_boston()
 X = boston.data
 y = boston.target
 features = boston.feature_names
@@ -178,8 +176,8 @@ boston_data.head()
 
 https://scikit-learn.org/stable/modules/model_evaluation.html#regression-metrics
 
-![jupyter](./1.3.png)              
-在这个案例中，我们使用<font color=red>MSE均方误差</font>>为模型的性能度量指标。
+![jupyter](./1.3.png) 
+在这个案例中，我们使用<font color=red>MSE均方误差</font>为模型的性能度量指标。
 
 
 
@@ -187,14 +185,35 @@ https://scikit-learn.org/stable/modules/model_evaluation.html#regression-metrics
 
 #### 1. 线性回归模型（[sklearn.linear_model.LinearRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression)）
 
-##### 1.1 最小二乘估计
+##### ① 原理（最小二乘法
 
-##### 1.2 几何视角
+教程中对于最小二乘法的解释对我还是不够友好，看得云里雾里，自己找了一个讲解视频，很清晰。https://www.bilibili.com/video/BV1q741177US?
 
-##### 1.3 概率视角
+损失函数为残差平方和：$\sum\limits_{i=1}^m(y_i-X_iw)^2=\sum\limits_{i=1}^{m}||y_i-X_iw||_2^2$， $y_i$为真实值，$X_iw$为预测值。
 
-下面，我们使用sklearn的线性回归实例来演示：                   
-https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression
+现在问题转换成了求解让残差平方和最小化的参数向量 ，这种通过最小化真实值和预测值之间的RSS来求解参数的方法叫
+做最小二乘法。求解极值的第一步往往是求解一阶导数并让一阶导数等于0，最小二乘法也不能免俗。
+
+$X_iw = w0+w_1x_{i1}+w_2x_{i2}+w_3x_{i3}+w_nx_{in}$
+
+对要求解的$w_i$依次作为要求解的参数，其他的作为常量，进行求导，使导数为0，则得到多个多元一次方程，求解即可。
+
+##### ② 实践
+
+（1）[sklearn中的线性回归](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression)                   
+`class sklearn.linear_model.LinearRegression (fit_intercept=True, normalize=False, copy_X=True, n_jobs=None)`
+
+该方法共有四个参数：
+
+fit_intercept: 是否计算模型的截距，默认为True。
+
+normalize:  标准化，默认为False。
+
+copy_X： 是否在X.copy()上进行操作，默认为True。
+
+ n_jobs：用于计算的作业数，默认为None/1。如果输入-1，则表示使用全部的CPU进行计算。
+
+这些参数中并没有一个是必填的，更没有对我们的模型有不可替代作用的参数。这说明，线性回归的性能，往往取决于数据本身，而并非是我们的调参能力，线性回归也因此对数据有着很高的要求。
 
 
 ```python
@@ -202,6 +221,7 @@ from sklearn import linear_model      # 引入线性回归方法
 lin_reg = linear_model.LinearRegression()       # 创建线性回归的类
 lin_reg.fit(X,y)        # 输入特征X和因变量y进行训练
 print("模型系数：",lin_reg.coef_)             # 输出模型的系数
+print("模型截距：",lin_reg.intercept_)             # 输出模型的截距
 print("模型得分：",lin_reg.score(X,y))    # 输出模型的决定系数R^2
 ```
 
@@ -209,25 +229,92 @@ print("模型得分：",lin_reg.score(X,y))    # 输出模型的决定系数R^2
      -1.77666112e+01  3.80986521e+00  6.92224640e-04 -1.47556685e+00
       3.06049479e-01 -1.23345939e-02 -9.52747232e-01  9.31168327e-03
      -5.24758378e-01]
+    模型截距： 36.459488385089855
     模型得分： 0.7406426641094095
+
+
+
+（2）[岭回归（原理待学习，解决多重共线性问题）](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html#sklearn.linear_model.Ridge)
+
+`class sklearn.linear_model.Ridge (alpha=1.0, fit_intercept=True, normalize=False, copy_X=True, max_iter=None,
+tol=0.001, solver=’auto’, random_state=None)`
+
+
+```python
+# 岭回归
+from sklearn import linear_model      
+ridge = linear_model.Ridge()      
+ridge.fit(X,y)        
+print("模型系数：",ridge.coef_)             
+print("模型截距：",ridge.intercept_)            
+print("模型得分：",ridge.score(X,y)) 
+```
+
+    模型系数： [-1.04595278e-01  4.74432243e-02 -8.80467889e-03  2.55239322e+00
+     -1.07770146e+01  3.85400020e+00 -5.41453810e-03 -1.37265353e+00
+      2.90141589e-01 -1.29116463e-02 -8.76074394e-01  9.67327945e-03
+     -5.33343225e-01]
+    模型截距： 31.597669818274195
+    模型得分： 0.7388703133867616
+
+（3）[Lasso回归（原理待学习，解决多重共线性问题）](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html#sklearn.linear_model.Lasso)
+
+`class sklearn.linear_model.Lasso (alpha=1.0, fit_intercept=True, normalize=False, precompute=False,
+copy_X=True, max_iter=1000, tol=0.0001, warm_start=False, positive=False, random_state=None, selection=’cyclic’)
+ai`
+
+
+```python
+# Lasso回归
+from sklearn import linear_model      
+lasso = linear_model.Lasso()      
+lasso.fit(X,y)        
+print("模型系数：",lasso.coef_)             
+print("模型截距：",lasso.intercept_)            
+print("模型得分：",lasso.score(X,y)) 
+```
+
+    模型系数： [-0.06343729  0.04916467 -0.          0.         -0.          0.9498107
+      0.02090951 -0.66879     0.26420643 -0.01521159 -0.72296636  0.00824703
+     -0.76111454]
+    模型截距： 41.05693374499338
+    模型得分： 0.6825842212709925
 
 
 
 #### 2. 线性回归的推广
 
-##### 2.1 多项式回归（[sklearn.preprocessing.PolynomialFeatures](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html?highlight=poly#sklearn.preprocessing.PolynomialFeatures)）
+##### ① 原理
 
-##### 2.2 广义可加模型GAM（[`pyGam`](https://github.com/dswah/pyGAM/blob/master/doc/source/notebooks/quick_start.ipynb)）
+（1）多项式回归
 
-多项式回归实例介绍：      
+通常来说，一组数据由多个特征和标签组成。当这些特征分别与标签存在线性关系的时候，我们就说这一组数据是线性数据。当特征矩阵中任意一个特征与标签之间的关系需要使用三角函数，指数函数等函数来定义，则我们就说这种数据叫做“非线性数据”。
 
-https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html?highlight=poly#sklearn.preprocessing.PolynomialFeatures     
+从线性回归的方程中，我们可以总结出线性模型的特点：其自变量都是一次项。非线性模型的特点则是，自变量为高阶、三角函数、指数函数这种。
 
-sklearn.preprocessing.PolynomialFeatures(degree=2, *, interaction_only=False, include_bias=True, order='C'):               
+|                | 线性模型                           | 非线性模型                            |
+| -------------- | ---------------------------------- | ------------------------------------- |
+| 代表模型       | 线性回归，逻辑回归，弹性网，感知机 | 决策树、树的集成模型，使用高斯核的SVM |
+| 模型特点       | 模型简单，运行速度快               | 模型复杂，效果好，但速度慢            |
+| 数学特征：回归 | 自变量是一次项                     | 自变量不都是一次项                    |
+| 分类           | 决策边界上的自变量都是一次项       | 决策边界上的自变量不都是一次项        |
+| 可视化：回归   | 拟合出的图像是一条直线             | 拟合出的图像不是一条直线              |
+| 分类           | 决策边界在二维平面是一条直线       | 决策边界在二维平面不是一条直线        |
+| 擅长数据类型   | 主要是线性数据，线性可分数据       | 所有数据                              |
+
+（2）广义可加模型GAM（[`pyGam`](https://github.com/dswah/pyGAM/blob/master/doc/source/notebooks/quick_start.ipynb)）
+
+##### ② 实践
+
+（1）[多项式回归](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html?highlight=poly#sklearn.preprocessing.PolynomialFeatures   )
+
+线性回归使用类似于升维的转换，将数据由非线性转换为线性，从而为线性回归赋予处理非线性数据的能力。
+
+  `sklearn.preprocessing.PolynomialFeatures(degree=2, *, interaction_only=False, include_bias=True, order='C')`
 
    - 参数：
 
-     degree：特征转换的阶数。  
+     degree：特征转换的阶数，默认为2。 
 
      interaction_onlyboolean：是否只包含交互项，默认False 。
 
@@ -264,9 +351,7 @@ print("2次转化X：\n",poly.fit_transform(X_arr))
      [  1.   4.   5.   6.   7.  20.  24.  28.  30.  35.  42.]
      [  1.   8.   9.  10.  11.  72.  80.  88.  90.  99. 110.]]
 
-(b) GAM模型实例介绍：          
-安装pygam：pip install pygam               
-https://github.com/dswah/pyGAM/blob/master/doc/source/notebooks/quick_start.ipynb                     
+（2）[GAM模型](https://github.com/dswah/pyGAM/blob/master/doc/source/notebooks/quick_start.ipynb )      
 
 
 ```python
@@ -315,6 +400,8 @@ gam.summary()
 
 #### 3. 回归树（[sklearn.tree.DecisionTreeRegressor](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html?highlight=tree#sklearn.tree.DecisionTreeRegressor)）
 
+##### ① 原理
+
 回归树与线性模型的比较：              
 线性模型的模型形式与树模型的模型形式有着本质的区别，具体而言，线性回归对模型形式做了如下假定：$f(x) = w_0 + \sum\limits_{j=1}^{p}w_jx^{(j)}$，而回归树则是$f(x) = \sum\limits_{m=1}^{J}\hat{c}_mI(x \in R_m)$。那问题来了，哪种模型更优呢？这个要视具体情况而言，如果特征变量与因变量的关系能很好的用线性关系来表达，那么线性回归通常有着不错的预测效果，拟合效果则优于不能揭示线性结构的回归树。反之，如果特征变量与因变量的关系呈现高度复杂的非线性，那么树方法比传统方法更优。                     
 ![jupyter](./1.9.1.png)                        
@@ -327,17 +414,17 @@ gam.summary()
 - 树模型能很好处理缺失值和异常值，对异常值不敏感，但是这个对线性模型来说却是致命的。
 - 树模型的预测准确性一般无法达到其他回归模型的水平，但是改进的方法很多。
 
+##### ② 实践
 
+[sklearn使用回归树](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html?highlight=tree#sklearn.tree.DecisionTreeRegressor )
 
-sklearn使用回归树的实例：https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html?highlight=tree#sklearn.tree.DecisionTreeRegressor 
+`sklearn.tree.DecisionTreeRegressor(*, criterion='mse', splitter='best', max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features=None, random_state=None, max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None, presort='deprecated', ccp_alpha=0.0）`
 
-sklearn.tree.DecisionTreeRegressor(*, criterion='mse', splitter='best', max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features=None, random_state=None, max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None, presort='deprecated', ccp_alpha=0.0）  
+   - 参数：
 
-   - 参数：(列举几个重要的，常用的，详情请看上面的官网)  
+     criterion：{“ mse”，“ friedman_mse”，“ mae”}。衡量分割标准的函数，默认=“ mse”。
 
-     criterion：{“ mse”，“ friedman_mse”，“ mae”}，默认=“ mse”。衡量分割标准的函数 。
-
-     splitter：{“best”, “random”}, default=”best”。分割方式。
+     splitter：{“best”, “random”}。分割方式，默认best
 
      max_depth：树的最大深度。
 
@@ -371,23 +458,25 @@ reg_tree.score(X,y)
 
 #### 4. 支撑向量机回归SVR（[sklearn.svm.SVR](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html?highlight=svr#sklearn.svm.SVR)）
 
-sklearn中使用SVR实例：
+##### ① 原理
 
-sklearn.svm.SVR(*, kernel='rbf', degree=3, gamma='scale', coef0=0.0, tol=0.001, C=1.0, epsilon=0.1, shrinking=True, cache_size=200, verbose=False, max_iter=-1) 
+没搞明白。。
 
-https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html?highlight=svr#sklearn.svm.SVR                        
+##### ② 实践
+
+[sklearn中的SVR](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html?highlight=svr#sklearn.svm.SVR )
+
+`sklearn.svm.SVR(*, kernel='rbf', degree=3, gamma='scale', coef0=0.0, tol=0.001, C=1.0, epsilon=0.1, shrinking=True, cache_size=200, verbose=False, max_iter=-1)`
 
    - 参数：
 
-     kernel：核函数，{‘linear’, ‘poly’, ‘rbf’, ‘sigmoid’, ‘precomputed’}, 默认=’rbf’。(后面会详细介绍) 
+     kernel：核函数，{‘linear’, ‘poly’, ‘rbf’, ‘sigmoid’, ‘precomputed’}， 默认=’rbf’。
 
      degree：多项式核函数的阶数。默认 = 3。
 
-     C：正则化参数，默认=1.0。(后面会详细介绍) 
+     C：正则化参数，默认=1.0。
 
-     epsilon：SVR模型允许的不计算误差的邻域大小。默认0.1。              
-
-
+     epsilon：SVR模型允许的不计算误差的邻域大小。默认0.1。
 
 ```python
 from sklearn.svm import SVR
@@ -411,4 +500,15 @@ reg_svr.score(X,y)
 
 
     0.7028285706092579
+
+
+
+参考资料：
+
+拓展学习资料：线性回归模型123
+https://zhuanlan.zhihu.com/p/109808497 
+https://zhuanlan.zhihu.com/p/109815760
+https://zhuanlan.zhihu.com/p/109819252
+R语言实战之回归分析https://zhuanlan.zhihu.com/p/184923047 
+线性回归https://zhuanlan.zhihu.com/p/49480391
 
