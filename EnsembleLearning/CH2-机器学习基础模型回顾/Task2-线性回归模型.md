@@ -1,8 +1,4 @@
-
-
-
-
-DataWhale教程：[DataWhale集成学习教程链接](https://github.com/datawhalechina/team-learning-data-mining/tree/master/EnsembleLearning)
+参考：[DataWhale教程链接](https://github.com/datawhalechina/team-learning-data-mining/tree/master/EnsembleLearning)
 
 写在前面：
 
