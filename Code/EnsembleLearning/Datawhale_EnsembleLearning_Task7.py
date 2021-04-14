@@ -81,7 +81,7 @@ class VoteClassify:
     def get_voting_diffbasemodel(self):
         # define the base models
         model_dict = dict()
-        # model_dict['lr'] = LogisticRegression(max_iter=3000) #迭代次数少会报错
+        model_dict['lr'] = LogisticRegression(max_iter=3000) #迭代次数少会报错
         model_dict['lr_with_std'] = make_pipeline(StandardScaler(),LogisticRegression())
         model_dict['svm'] = SVC(probability=True)
         model_dict['svm_with_std'] = make_pipeline(StandardScaler(),SVC(probability=True))
