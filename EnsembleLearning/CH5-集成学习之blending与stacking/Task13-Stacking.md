@@ -1,143 +1,52 @@
+参考：[DataWhale教程链接](https://github.com/datawhalechina/team-learning-data-mining/tree/master/EnsembleLearning)
 
+集成学习（上）所有Task：
 
-[TOC]
+[（一）集成学习上——机器学习三大任务](https://blog.csdn.net/youyoufengyuhan/article/details/114853640)
 
-# Blending集成学习算法
+[（二）集成学习上——回归模型](https://blog.csdn.net/youyoufengyuhan/article/details/114994155)
 
-Blending集成学习方式：
+[（三）集成学习上——偏差与方差](https://blog.csdn.net/youyoufengyuhan/article/details/115080030)
 
-- (1) 将数据划分为训练集TrainData和测试集TestData，其中训练集需要再次划分为训练集Train_TrainData和验证集Train_ValData；
-- (2) 构建第一层模型：选择$M$个基模型（对Train_TrainData数据集进行训练），这些模型可以使同质的也可以是异质的；
-- (3) 训练第一层模型：使用Train_TrainData训练步骤2中的$M$个模型，然后用训练好的$M$个模型预测Train_ValData得到val_predict；
+[（四）集成学习上——回归模型评估与超参数调优](https://blog.csdn.net/youyoufengyuhan/article/details/115136244)
 
-- (4) 构建第二层的模型：一般是逻辑回归；
+[（五）集成学习上——分类模型](https://blog.csdn.net/youyoufengyuhan/article/details/115271877)
 
-- (5) 训练第二层的模型：以Train_ValData的特征为输入，以val_predict为因变量训练第二层的模型；
+[（六）集成学习上——分类模型评估与超参数调优](https://blog.csdn.net/youyoufengyuhan/article/details/115282143)
 
-   <font color="red"> 至此，模型训练完成</font>
+[（七）集成学习中——投票法](https://blog.csdn.net/youyoufengyuhan/article/details/115706397)
 
-   <font color="red"> 接下来是模型预测</font>
+[（八）集成学习中——bagging](https://blog.csdn.net/youyoufengyuhan/article/details/115710507)
 
-- (6) 模型预测：用TestData走一遍第一层模型，得到test_predict1，再用test_predict1作为输入走一遍第二层模型进行预测，该结果为整个测试集的结果。
+[（九）集成学习中——Boosting简介&AdaBoost](https://blog.csdn.net/youyoufengyuhan/article/details/115919031)
 
-Blending集成方式的优劣：
+[（十）集成学习中——GBDT](https://blog.csdn.net/youyoufengyuhan/article/details/115956788)
 
-- 优点：实现简单粗暴，没有太多的理论的分析。
-- 缺点：只使用了一部分数据集作为留出集进行验证，也就是只能用上数据中的一部分，实际上这对数据来说是很奢侈浪费的。
+[（十一）集成学习中——XgBoost、LightGBM](https://blog.csdn.net/youyoufengyuhan/article/details/116179645)
 
+[（十二）集成学习（下）——Blending](https://blog.csdn.net/youyoufengyuhan/article/details/116679272)
 
-```python
-# 加载相关工具包
-import numpy as np
-import pandas as pd 
-import matplotlib.pyplot as plt
-plt.style.use("ggplot")
-%matplotlib inline
-import seaborn as sns
-```
-
-
-```python
-# 创建数据
-from sklearn import datasets 
-from sklearn.datasets import make_blobs
-from sklearn.model_selection import train_test_split
-data, target = make_blobs(n_samples=10000, centers=2, random_state=1, cluster_std=1.0 )
-## 创建训练集和测试集
-X_train1,X_test,y_train1,y_test = train_test_split(data, target, test_size=0.2, random_state=1)
-## 创建训练集和验证集
-X_train,X_val,y_train,y_val = train_test_split(X_train1, y_train1, test_size=0.3, random_state=1)
-print("The shape of training X:",X_train.shape)
-print("The shape of training y:",y_train.shape)
-print("The shape of test X:",X_test.shape)
-print("The shape of test y:",y_test.shape)
-print("The shape of validation X:",X_val.shape)
-print("The shape of validation y:",y_val.shape)
-```
-
-    The shape of training X: (5600, 2)
-    The shape of training y: (5600,)
-    The shape of test X: (2000, 2)
-    The shape of test y: (2000,)
-    The shape of validation X: (2400, 2)
-    The shape of validation y: (2400,)
+[（十三）集成学习（下）——Stacking](https://blog.csdn.net/youyoufengyuhan/article/details/116771649)
 
 
 
-```python
-#  设置第一层分类器
-from sklearn.svm import SVC
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.neighbors import KNeighborsClassifier
-
-clfs = [SVC(probability = True),RandomForestClassifier(n_estimators=5, n_jobs=-1, criterion='gini'),KNeighborsClassifier()]
-
-# 设置第二层分类器
-from sklearn.linear_model import LinearRegression
-lr = LinearRegression()
-
-
-```
-
-
-```python
-# 输出第一层的验证集结果与测试集结果
-val_features = np.zeros((X_val.shape[0],len(clfs)))  # 初始化验证集结果
-test_features = np.zeros((X_test.shape[0],len(clfs)))  # 初始化测试集结果
-
-for i,clf in enumerate(clfs):
-    clf.fit(X_train,y_train)
-    val_feature = clf.predict_proba(X_val)[:, 1]
-    test_feature = clf.predict_proba(X_test)[:,1]
-    val_features[:,i] = val_feature
-    test_features[:,i] = test_feature
-    
-```
-
-
-```python
-# 将第一层的验证集的结果输入第二层训练第二层分类器
-lr.fit(val_features,y_val)
-# 输出预测的结果
-from sklearn.model_selection import cross_val_score
-cross_val_score(lr,test_features,y_test,cv=5)
-```
-
-
-
-
-    array([1., 1., 1., 1., 1.])
-
-
-
-可以看到，在每一折的交叉验证的效果都是非常好的，这个集成学习方法在这个数据集上是十分有效的，不过这个数据集是我们虚拟的，因此大家可以把他用在实际数据上看看效果。
-
-**作业：                                  
-留个小作业吧，我们刚刚的例子是针对人造数据集，表现可能会比较好一点，因为我们使用Blending方式对iris数据集进行预测，并用第四章的决策边界画出来，找找规律。**
-
-
-
-
-
-# 3. Stacking集成学习算法
+# Stacking集成学习算法
 
 Stacking是一种比赛中常用的trick，严格它来说并不是一种算法，而是精美而又复杂的，对模型集成的一种策略。Stacking集成算法可以理解为一个两层的集成，第一层含有多个基础分类器，把输出的预测结果作为第二层的输入特征， 第二层的分类器通常是逻辑回归。
 
+Blending存在的问题：Blending在第二层集成的时候中只会用了验证集的数据产生的特征，对数据的使用浪费比较大。
 
+Stacking：采用交叉验证的思路，产生多组验证集，且可以充分利用训练集。
 
-基于前面对Blending集成学习算法的讨论，我们知道：Blending在集成的过程中只会用到验证集的数据，对数据实际上是一个很大的浪费。为了解决这个问题，我们详细分析下Blending到底哪里出现问题并如何改进。在Blending中，我们产生验证集的方式是使用分割的方式，产生一组训练集和一组验证集，这让我们联想到交叉验证的方式。顺着这个思路，我们对Stacking进行建模(如下图)：                           
+**Blending与Stacking对比：** 
 
-![jupyter](./4.jpg)                                               
+| 集成方法   | Blending                   | Stacking                       |
+| ---------- | -------------------------- | ------------------------------ |
+| 集成的特征 | 一次划分，特征简单，数据少 | cv交叉验证，特征略复杂，数据多 |
+| 泛化能力   | 可能会过拟合               | 健壮性好                       |
 
-   - 首先将所有数据集生成测试集和训练集（假如训练集为10000,测试集为2500行），那么上层会进行5折交叉检验，使用训练集中的8000条作为训练集，剩余2000行作为验证集（橙色）。                                         
-   - 每次验证相当于使用了蓝色的8000条数据训练出一个模型，使用模型对验证集进行验证得到2000条数据，并对测试集进行预测，得到2500条数据，这样经过5次交叉检验，可以得到中间的橙色的5* 2000条验证集的结果(相当于每条数据的预测结果)，5* 2500条测试集的预测结果。                                           
-   - 接下来会将验证集的5* 2000条预测结果拼接成10000行长的矩阵，标记为$A_1$，而对于5* 2500行的测试集的预测结果进行加权平均，得到一个2500一列的矩阵，标记为$B_1$。                            
-   - 上面得到一个基模型在数据集上的预测结果$A_1$、$B_1$,这样当我们对3个基模型进行集成的话，相于得到了$A_1$、$A_2$、$A_3$、$B_1$、$B_2$、$B_3$六个矩阵。                            
-   - 之后我们会将$A_1$、$A_2$、$A_3$并列在一起成10000行3列的矩阵作为training data,$B_1$、$B_2$、$B_3$合并在一起成2500行3列的矩阵作为testing  data，让下层学习器基于这样的数据进行再训练。              
-   - 再训练是基于每个基础模型的预测结果作为特征（三个特征），次学习器会学习训练如果往这样的基学习的预测结果上赋予权重w，来使得最后的预测最为准确。
+看一下Stacking是如何集成算法的：(参考案例：https://www.cnblogs.com/Christina-Notebook/p/10063146.html)                                                          ![jupyter](./5.png)                                  
 
-下面，我们来实际应用下Stacking是如何集成算法的：(参考案例：https://www.cnblogs.com/Christina-Notebook/p/10063146.html)                                                          
-![jupyter](./5.png)                                  
 **由于sklearn并没有直接对Stacking的方法，因此我们需要下载mlxtend工具包(pip install mlxtend)**
 
 
@@ -146,7 +55,7 @@ Stacking是一种比赛中常用的trick，严格它来说并不是一种算法�
 from sklearn import datasets
 
 iris = datasets.load_iris()
-X, y = iris.data[:, 1:3], iris.target
+X, y = iris.data[:, 1:3], iris.target
 from sklearn.model_selection import cross_val_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
@@ -206,7 +115,6 @@ plt.show()
 ```
 
 
-​    
 ![png](Stacking_files/Stacking_15_0.png)
 ​    
 
@@ -490,20 +398,9 @@ plt.show()
 ```
 
 
-​    
 ![png](Stacking_files/Stacking_21_0.png)
-​    
 
 
-**Blending与Stacking对比：**                               
-Blending的优点在于：
-   - 比stacking简单（因为不用进行k次的交叉验证来获得stacker feature）
 
-而缺点在于：
-   - 使用了很少的数据（是划分hold-out作为测试集，并非cv）
-   - blender可能会过拟合（其实大概率是第一点导致的）
-   - stacking使用多次的CV会比较稳健
 
-# 4. 结语
 
-在本章中，我们讨论了如何使用Blending和Stacking的方式去集成多个模型，相比于Bagging与Boosting的集成方式，Blending和Stacking的方式更加简单和直观，且效果还很好，因此在比赛中有这么一句话：它(Stacking)可以帮你打败当前学术界性能最好的算法  。那么截至目前为止，我们已经把所有的集成学习方式都讨论完了，接下来的第六章，我们将以几个大型的案例来展示集成学习的威力。
